@@ -21,6 +21,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import cz.msebera.android.httpclient.Header;
 public class MainActivity extends AppCompatActivity {
@@ -56,10 +58,6 @@ public class MainActivity extends AppCompatActivity {
     List<Long> randomList = new ArrayList<Long>(Arrays.asList(1L, 2L));
 
     private Long merRef;
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,9 +155,16 @@ public class MainActivity extends AppCompatActivity {
                 setOp();
                 checkCr();
 
+                try {
+                    DownloadTask task = new DownloadTask();
+                    task.execute("http://venusrecharge.co.in/Transaction.aspx?authkey=10034&authpass=RANGANATHA@990&mobile=" + num + "&amount=" + am + "&opcode=" + op + "&Merchantrefno=" + merRef+ "&ServiceType=" + ser);
+                } catch (Exception e){
+                    Toast.makeText(getApplicationContext(), "Racharge failed!", Toast.LENGTH_SHORT).show();
+                }
+
                 // getResponse();
 
-                AsyncHttpClient client = new AsyncHttpClient();
+             /*   AsyncHttpClient client = new AsyncHttpClient();
                 client.get("http://venusrecharge.co.in/Transaction.aspx?authkey=10034&authpass=RANGANATHA@990&mobile=" + num + "&amount=" + am + "&opcode=" + op + "&Merchantrefno=" + merRef+ "&ServiceType=" + ser, new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -173,6 +178,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+              */
+
 
 
 
@@ -183,6 +190,83 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public class DownloadTask extends AsyncTask<String, Void, String>{
+
+        @Override
+        protected String doInBackground(String... urls) {
+
+            String result = "";
+            URL url;
+            HttpURLConnection urlConnection = null;
+
+            try {
+
+                url = new URL(urls[0]);
+                urlConnection = (HttpURLConnection)url.openConnection();
+
+                InputStream in = urlConnection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(in);
+
+                int data=reader.read();
+                while(data!=-1){
+                    char current =(char) data;
+                    result+=current;
+                    data=reader.read();
+                }
+
+                return result;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                Toast.makeText(getApplicationContext(), "Racharge failed!", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(getApplicationContext(), "Racharge failed!", Toast.LENGTH_SHORT).show();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            try {
+                String message = "";
+
+                Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                        .parse(new InputSource(new StringReader(result)));
+                NodeList errNodes = doc.getElementsByTagName("Response");
+                if (errNodes.getLength() > 0) {
+                    Element err = (Element)errNodes.item(0);
+                    System.out.println("ResponseStatus -"+err.getElementsByTagName("ResponseStatus").item(0).getTextContent());
+                    String status = err.getElementsByTagName("ResponseStatus").item(0).getTextContent();
+                    String description = err.getElementsByTagName("Description").item(0).getTextContent();
+                    message = status+" - "+description;
+
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+              //  System.out.println("dst_offset -"+err.getElementsByTagName("dst_offset").item(0).getTextContent());
+                //System.out.println("time_zone_id -"+err.getElementsByTagName("time_zone_id").item(0).getTextContent());
+                //System.out.println("time_zone_name -"+err.getElementsByTagName("time_zone_name").item(0).getTextContent());
+
+
+
+
+            } else {
+                    Toast.makeText(getApplicationContext(), "Failed to make a recharge request! Try again later.", Toast.LENGTH_LONG).show();
+                // success
+            }
+
+            } catch (SAXException e) {
+                e.printStackTrace();
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 
 
     private void getEditText(){
