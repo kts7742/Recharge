@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fill the details for the recharge"
+        android:id="@+id/head"
+        android:textSize="25sp"
+        android:textColor="@android:color/black"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_below="@+id/head"
+        android:id="@+id/number"
+        android:layout_marginTop="20dp"
+        android:hint="Mobile Number/Registered mobile number(DTH)"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:layout_below="@+id/number"
+        android:layout_marginTop="20dp"
+        android:id="@+id/amount"
+        android:hint="Add amount in rupees"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:layout_below="@+id/head"
+        android:layout_marginTop="30dp"
+        android:id="@+id/operator"
+        android:textSize="20sp"
+        android:layout_marginLeft="300dp"
+
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chooseOperator"
+        android:layout_below="@+id/amount"
+        android:text="Choose Operator"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@android:color/holo_blue_light"
+        android:backgroundTint="@android:color/white"
+        />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/chooseOperator"
+        android:id="@+id/switchDTH"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DTH"
+        android:layout_below="@id/chooseOperator"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="60dp"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/switchDTH"
+        android:layout_marginTop="10dp"
+        android:text="Recharge"
+        android:id="@+id/rechargeBtn"
+        android:backgroundTint="@android:color/white"
+        />
+
+
+
+
+</RelativeLayout>
