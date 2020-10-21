@@ -87,7 +87,20 @@
         android:backgroundTint="@android:color/white"
         />
 
-
+    <Button
+        android:id="@+id/button"
+        android:layout_width="152dp"
+        android:layout_height="69dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="186dp"
+        android:layout_marginTop="471dp"
+        android:layout_marginEnd="73dp"
+        android:layout_marginBottom="63dp"
+        android:onClick="okok"
+        android:text="Button" />
 
 
 </RelativeLayout>
