@@ -59,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
 
     private Long merRef;
 
+    public void okok(View view)
+    {
+        Intent in = new Intent(getApplicationContext(), PaytmActivity.class);
+        startActivity(in);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -415,9 +421,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }*/
-   public void okok(View view)
-   {
-       Intent in = new Intent(MainActivity.this, PaytmActivity.class);
-   }
+
 
 }

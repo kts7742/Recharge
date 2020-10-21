@@ -21,7 +21,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
     public class  PaytmActivity extends AppCompatActivity {
-        Intent intent=getIntent();
+        //Intent intent=getIntent();
 
         EditText amount, note, name, upivirtualid;
         Button send;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
+            setContentView(R.layout.activity_paytm);
 
             send = (Button) findViewById(R.id.send);
             amount = (EditText)findViewById(R.id.amount_et);
