@@ -4,6 +4,77 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PaytmActivity">
+    tools:context=".PaytmActivity"><![CDATA[
 
+
+
+
+    "
+        tools:layout_editor_absoluteX="24dp"
+        tools:layout_editor_absoluteY="49dp" />
+
+
+
+
+
+
+
+    ]]>
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="339dp"
+        android:layout_height="59dp"
+        android:hint="Name"
+        app:layout_constraintBottom_toTopOf="@+id/note"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.222"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upi_id" />
+
+    <EditText
+        android:id="@+id/upi_id"
+        android:layout_width="338dp"
+        android:layout_height="54dp"
+        android:hint="UPI ID"
+        app:layout_constraintBottom_toTopOf="@+id/name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.219"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/amount_et"
+        android:layout_width="326dp"
+        android:layout_height="52dp"
+        android:hint="Amount"
+        android:inputType="numberDecimal"
+
+        app:layout_constraintBottom_toTopOf="@+id/send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.223"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/note" />
+
+    <EditText
+        android:id="@+id/note"
+        android:layout_width="346dp"
+        android:layout_height="54dp"
+        android:hint="Note"
+
+        app:layout_constraintBottom_toTopOf="@+id/amount_et"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.296"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/name" />
+
+    <Button
+        android:id="@+id/send"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@color/colorPrimary"
+        android:text="Pay Now"
+        tools:layout_editor_absoluteX="67dp"
+        tools:layout_editor_absoluteY="296dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

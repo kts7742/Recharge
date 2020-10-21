@@ -145,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         rechargeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -416,5 +415,9 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }*/
+   public void okok(View view)
+   {
+       Intent in = new Intent(MainActivity.this, PaytmActivity.class);
+   }
 
 }
