@@ -223,10 +223,10 @@ public class MainActivity extends AppCompatActivity {
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "Racharge failed!", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getApplicationContext(), "Racharge failed!", Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
                 e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "Racharge failed!", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getApplicationContext(), "Racharge failed!", Toast.LENGTH_SHORT).show();
             }
 
             return null;
@@ -236,40 +236,41 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            try {
-                String message = "";
+            if(result!=null) {
+                try {
+                    String message = "";
 
-                Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                        .parse(new InputSource(new StringReader(result)));
-                NodeList errNodes = doc.getElementsByTagName("Response");
-                if (errNodes.getLength() > 0) {
-                    Element err = (Element)errNodes.item(0);
-                    System.out.println("ResponseStatus -"+err.getElementsByTagName("ResponseStatus").item(0).getTextContent());
-                    String status = err.getElementsByTagName("ResponseStatus").item(0).getTextContent();
-                    String description = err.getElementsByTagName("Description").item(0).getTextContent();
-                    message = status+" - "+description;
+                    Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                            .parse(new InputSource(new StringReader(result)));
+                    NodeList errNodes = doc.getElementsByTagName("Response");
+                    if (errNodes.getLength() > 0) {
+                        Element err = (Element) errNodes.item(0);
+                        System.out.println("ResponseStatus -" + err.getElementsByTagName("ResponseStatus").item(0).getTextContent());
+                        String status = err.getElementsByTagName("ResponseStatus").item(0).getTextContent();
+                        String description = err.getElementsByTagName("Description").item(0).getTextContent();
+                        message = status + " - " + description;
 
-                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-              //  System.out.println("dst_offset -"+err.getElementsByTagName("dst_offset").item(0).getTextContent());
-                //System.out.println("time_zone_id -"+err.getElementsByTagName("time_zone_id").item(0).getTextContent());
-                //System.out.println("time_zone_name -"+err.getElementsByTagName("time_zone_name").item(0).getTextContent());
-
-
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                        //  System.out.println("dst_offset -"+err.getElementsByTagName("dst_offset").item(0).getTextContent());
+                        //System.out.println("time_zone_id -"+err.getElementsByTagName("time_zone_id").item(0).getTextContent());
+                        //System.out.println("time_zone_name -"+err.getElementsByTagName("time_zone_name").item(0).getTextContent());
 
 
-            } else {
-                    Toast.makeText(getApplicationContext(), "Failed to make a recharge request! Try again later.", Toast.LENGTH_LONG).show();
-                // success
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Failed to make a recharge request! Try again later.", Toast.LENGTH_LONG).show();
+                        // success
+                    }
+
+                } catch (SAXException e) {
+                    e.printStackTrace();
+                } catch (ParserConfigurationException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else{
+               // Toast.makeText(getApplicationContext(), "Recharge failed!", Toast.LENGTH_SHORT).show();
             }
-
-            } catch (SAXException e) {
-                e.printStackTrace();
-            } catch (ParserConfigurationException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
         }
     }
 
