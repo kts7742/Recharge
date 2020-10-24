@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".MainActivity">
 
     <TextView
@@ -69,32 +70,39 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="DTH"
         android:layout_below="@id/chooseOperator"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="60dp"
+        android:layout_marginLeft="50dp"
+        android:text="DTH"
         android:textColor="@android:color/black"
-        android:textSize="20sp"
-        />
+        android:textSize="20sp" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/switchDTH"
+        android:layout_below="@+id/note"
         android:layout_marginTop="10dp"
         android:text="Recharge"
         android:id="@+id/rechargeBtn"
         android:backgroundTint="@android:color/white"
         />
 
-    <Button
-        android:id="@+id/upiButton"
-        android:layout_width="wrap_content"
+
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/rechargeBtn"
-        android:layout_marginTop="50dp"
-        android:onClick="okok"
-        android:text="Button" />
+        android:layout_below="@+id/switchDTH"
+        android:hint="Name"
+        />
+
+    <EditText
+        android:id="@+id/note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name"
+        android:hint="Note"/>
 
 
 </RelativeLayout>

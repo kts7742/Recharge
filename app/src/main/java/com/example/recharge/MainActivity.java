@@ -2,12 +2,18 @@ package com.example.recharge;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -45,12 +51,18 @@ public class MainActivity extends AppCompatActivity {
 
     Button rechargeBtn, chooseOperator;
 
-      private String num, am, op, ser, operatorIntent;
+    private String num, am, op, ser, operatorIntent;
+
+    EditText  note, name;
+    String upivirtualid;
+    Button send;
+    String TAG ="main";
+    final int UPI_PAYMENT = 0;
 
     public EditText number, amount;
     TextView operator;
 
-   Switch switchDTH;
+    Switch switchDTH;
 
     HashMap<String, String> operatorDTH = new HashMap<>();
     HashMap<String, String> operatorMob = new HashMap<>();
@@ -58,12 +70,6 @@ public class MainActivity extends AppCompatActivity {
     List<Long> randomList = new ArrayList<Long>(Arrays.asList(1L, 2L));
 
     private Long merRef;
-
-    public void okok(View view)
-    {
-        Intent in = new Intent(getApplicationContext(), PaytmActivity.class);
-        startActivity(in);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,12 +129,12 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = preferences.edit();
 
 
-                 String numPref = number.getText().toString();
-                 String amountPref = amount.getText().toString();
+                String numPref = number.getText().toString();
+                String amountPref = amount.getText().toString();
                 Boolean switchPref = false;
-                 if(switchDTH.isChecked()){
-                     switchPref = true;
-                 }
+                if(switchDTH.isChecked()){
+                    switchPref = true;
+                }
                 editor.putBoolean("switch", switchPref);
 
 
@@ -151,48 +157,40 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+
+        amount = (EditText)findViewById(R.id.amount);
+        note = (EditText)findViewById(R.id.note);
+        name = (EditText) findViewById(R.id.name);
+        upivirtualid ="9031716589@ybl";
+
+
         rechargeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                gettingText();
+            public void onClick(View view) {
+                //Getting the values from the EditTexts
+                if (TextUtils.isEmpty(name.getText().toString().trim())){
+                    Toast.makeText(MainActivity.this," Name is invalid", Toast.LENGTH_SHORT).show();
 
-
-                setOp();
-                checkCr();
-
-                try {
-                    DownloadTask task = new DownloadTask();
-                    task.execute("http://venusrecharge.co.in/Transaction.aspx?authkey=10034&authpass=RANGANATHA@990&mobile=" + num + "&amount=" + am + "&opcode=" + op + "&Merchantrefno=" + merRef+ "&ServiceType=" + ser);
-                } catch (Exception e){
-                    Toast.makeText(getApplicationContext(), "Racharge failed!", Toast.LENGTH_SHORT).show();
                 }
+                else if (TextUtils.isEmpty(note.getText().toString().trim())){
+                    Toast.makeText( MainActivity.this," Note is invalid", Toast.LENGTH_SHORT).show();
 
-                // getResponse();
+                }else if (TextUtils.isEmpty(amount.getText().toString().trim())){
+                    Toast.makeText( MainActivity.this," Amount is invalid", Toast.LENGTH_SHORT).show();
+                }else{
 
-             /*   AsyncHttpClient client = new AsyncHttpClient();
-                client.get("http://venusrecharge.co.in/Transaction.aspx?authkey=10034&authpass=RANGANATHA@990&mobile=" + num + "&amount=" + am + "&opcode=" + op + "&Merchantrefno=" + merRef+ "&ServiceType=" + ser, new AsyncHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                        Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_SHORT).show();
-                    }
+                    payUsingUpi(name.getText().toString(),upivirtualid,
+                            note.getText().toString(), amount.getText().toString());
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                        Toast.makeText(getApplicationContext(), "failure" + error, Toast.LENGTH_SHORT).show();
-                        Log.i("error", error.toString());
-                    }
-                });
-
-              */
-
-
+                }
 
 
             }
         });
-
-
     }
+
+
 
 
     public class DownloadTask extends AsyncTask<String, Void, String>{
@@ -223,10 +221,10 @@ public class MainActivity extends AppCompatActivity {
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
-               // Toast.makeText(getApplicationContext(), "Racharge failed!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Racharge failed!", Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
                 e.printStackTrace();
-               // Toast.makeText(getApplicationContext(), "Racharge failed!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Racharge failed!", Toast.LENGTH_SHORT).show();
             }
 
             return null;
@@ -236,41 +234,40 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            if(result!=null) {
-                try {
-                    String message = "";
+            try {
+                String message = "";
 
-                    Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                            .parse(new InputSource(new StringReader(result)));
-                    NodeList errNodes = doc.getElementsByTagName("Response");
-                    if (errNodes.getLength() > 0) {
-                        Element err = (Element) errNodes.item(0);
-                        System.out.println("ResponseStatus -" + err.getElementsByTagName("ResponseStatus").item(0).getTextContent());
-                        String status = err.getElementsByTagName("ResponseStatus").item(0).getTextContent();
-                        String description = err.getElementsByTagName("Description").item(0).getTextContent();
-                        message = status + " - " + description;
+                Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                        .parse(new InputSource(new StringReader(result)));
+                NodeList errNodes = doc.getElementsByTagName("Response");
+                if (errNodes.getLength() > 0) {
+                    Element err = (Element)errNodes.item(0);
+                    System.out.println("ResponseStatus -"+err.getElementsByTagName("ResponseStatus").item(0).getTextContent());
+                    String status = err.getElementsByTagName("ResponseStatus").item(0).getTextContent();
+                    String description = err.getElementsByTagName("Description").item(0).getTextContent();
+                    message = status+" - "+description;
 
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                        //  System.out.println("dst_offset -"+err.getElementsByTagName("dst_offset").item(0).getTextContent());
-                        //System.out.println("time_zone_id -"+err.getElementsByTagName("time_zone_id").item(0).getTextContent());
-                        //System.out.println("time_zone_name -"+err.getElementsByTagName("time_zone_name").item(0).getTextContent());
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                    //  System.out.println("dst_offset -"+err.getElementsByTagName("dst_offset").item(0).getTextContent());
+                    //System.out.println("time_zone_id -"+err.getElementsByTagName("time_zone_id").item(0).getTextContent());
+                    //System.out.println("time_zone_name -"+err.getElementsByTagName("time_zone_name").item(0).getTextContent());
 
 
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Failed to make a recharge request! Try again later.", Toast.LENGTH_LONG).show();
-                        // success
-                    }
 
-                } catch (SAXException e) {
-                    e.printStackTrace();
-                } catch (ParserConfigurationException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Failed to make a recharge request! Try again later.", Toast.LENGTH_LONG).show();
+                    // success
                 }
-            } else{
-               // Toast.makeText(getApplicationContext(), "Recharge failed!", Toast.LENGTH_SHORT).show();
+
+            } catch (SAXException e) {
+                e.printStackTrace();
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
         }
     }
 
@@ -289,13 +286,13 @@ public class MainActivity extends AppCompatActivity {
         merRef = generateRandom();
         int i=0;
         while(i<randomList.size()){
-       if(merRef == randomList.get(i)){
-          merRef = generateRandom();
-          i=0;
-       }
-       else {
-           i++;
-       }
+            if(merRef == randomList.get(i)){
+                merRef = generateRandom();
+                i=0;
+            }
+            else {
+                i++;
+            }
         }
 
         randomList.add(merRef);
@@ -384,44 +381,131 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-   /* private void getResponse(){
-        try {
-            String url = "http://venusrecharge.co.in/Transaction.aspx?authkey=10034&authpass=RANGANATHA@990&mobile=" + num + "&amount=" + am + "&opcode=" + op + "&Merchantrefno=" + merRef+ "&ServiceType=" + ser;
-            System.out.println(url);
-            URL obj = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            int responseCode = con.getResponseCode();
-            System.out.println("Response Code : " + responseCode);
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-            //print in String
-            // System.out.println(response.toString());
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                    .parse(new InputSource(new StringReader(response.toString())));
-            NodeList errNodes = doc.getElementsByTagName("Response");
-            if (errNodes.getLength() > 0) {
-                Element err = (Element)errNodes.item(0);
-                System.out.println("ResponseStatus -"+err.getElementsByTagName("ResponseStatus").item(0).getTextContent());
-               /* System.out.println("dst_offset -"+err.getElementsByTagName("dst_offset").item(0).getTextContent());
-                System.out.println("time_zone_id -"+err.getElementsByTagName("time_zone_id").item(0).getTextContent());
-                System.out.println("time_zone_name -"+err.getElementsByTagName("time_zone_name").item(0).getTextContent());
+    void payUsingUpi(  String name,String upiId, String note, String amount) {
+        Uri uri = Uri.parse("upi://pay").buildUpon()
+                .appendQueryParameter("pa", upiId)
+                .appendQueryParameter("pn", name)
+                //.appendQueryParameter("mc", "")
+                //.appendQueryParameter("tid", "02125412")
+                //.appendQueryParameter("tr", "25584584")
+                .appendQueryParameter("tn", note)
+                .appendQueryParameter("am", amount)
+                .appendQueryParameter("cu", "INR")
+                //.appendQueryParameter("refUrl", "blueapp")
+                .build();
 
 
+        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
+        upiPayIntent.setData(uri);
 
+        // will always show a dialog to user to choose an app
+        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
 
-            } else {
-                // success
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        // check if intent resolves
+        if(null != chooser.resolveActivity(getPackageManager())) {
+            startActivityForResult(chooser, UPI_PAYMENT);
+        } else {
+            Toast.makeText( MainActivity.this,"No UPI app found, please install one to continue",Toast.LENGTH_SHORT).show();
         }
-    }*/
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case UPI_PAYMENT:
+                if ((RESULT_OK == resultCode) || (resultCode == 11)) {
+                    if (data != null) {
+                        String trxt = data.getStringExtra("response");
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add(trxt);
+                        upiPaymentDataOperation(dataList);
+                    } else {
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add("nothing");
+                        upiPaymentDataOperation(dataList);
+                    }
+                } else {
+                    //when user simply back without payment
+                    ArrayList<String> dataList = new ArrayList<>();
+                    dataList.add("nothing");
+                    upiPaymentDataOperation(dataList);
+                }
+                break;
+        }
+    }
+
+    private void upiPaymentDataOperation(ArrayList<String> data) {
+        if (isConnectionAvailable( MainActivity.this)) {
+            String str = data.get(0);
+
+            String paymentCancel = "";
+            if(str == null) str = "discard";
+            String status = "";
+            String approvalRefNo = "";
+            String response[] = str.split("&");
+            for (int i = 0; i < response.length; i++) {
+                String equalStr[] = response[i].split("=");
+                if(equalStr.length >= 2) {
+                    if (equalStr[0].toLowerCase().equals("Status".toLowerCase())) {
+                        status = equalStr[1].toLowerCase();
+                    }
+                    else if (equalStr[0].toLowerCase().equals("ApprovalRefNo".toLowerCase()) || equalStr[0].toLowerCase().equals("txnRef".toLowerCase())) {
+                        approvalRefNo = equalStr[1];
+                    }
+                }
+                else {
+                    paymentCancel = "Payment cancelled by user.";
+                }
+            }
+
+            if (status.equals("success")) {
+                //Code to handle successful transaction here.
+                gettingText();
+                setOp();
+                checkCr();
+
+                try {
+                    DownloadTask task = new DownloadTask();
+                    task.execute("https://lfyd.in/rechargeApi.php?mobile=" + num + "&amount=" + am + "&opcode=" + op + "&Merchantrefno=" + merRef + "&ServiceType=" + ser);
+
+                } catch (Exception e){
+                    Toast.makeText(getApplicationContext(), "Racharge failed!", Toast.LENGTH_SHORT).show();
+                }
 
 
+
+                Toast.makeText( MainActivity.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
+
+            }
+            else if("Payment cancelled by user.".equals(paymentCancel)) {
+                Toast.makeText(MainActivity.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
+
+
+            }
+            else {
+                Toast.makeText( MainActivity.this, "Transaction failed.Please try again", Toast.LENGTH_SHORT).show();
+
+
+            }
+        } else {
+
+
+            Toast.makeText( MainActivity.this, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static boolean isConnectionAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+            if (netInfo != null && netInfo.isConnected()
+                    && netInfo.isConnectedOrConnecting()
+                    && netInfo.isAvailable()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
