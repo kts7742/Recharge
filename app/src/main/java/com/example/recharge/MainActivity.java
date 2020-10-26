@@ -382,7 +382,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     void payUsingUpi(  String name,String upiId, String note, String amount) {
-        Uri uri = Uri.parse("upi://pay").buildUpon()
+        Uri uri = new Uri.Builder()
+                .scheme("upi").authority("pay")
+        //Uri.parse("upi://pay").buildUpon()
                 .appendQueryParameter("pa", upiId)
                 .appendQueryParameter("pn", name)
                 //.appendQueryParameter("mc", "")
@@ -402,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
         Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
 
         // check if intent resolves
-        if(null != chooser.resolveActivity(getPackageManager())) {
+        if( chooser.resolveActivity(getPackageManager())!=null) {
             startActivityForResult(chooser, UPI_PAYMENT);
         } else {
             Toast.makeText( MainActivity.this,"No UPI app found, please install one to continue",Toast.LENGTH_SHORT).show();
@@ -468,7 +470,7 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     DownloadTask task = new DownloadTask();
-                    task.execute("https://lfyd.in/rechargeApi.php?mobile=" + num + "&amount=" + am + "&opcode=" + op + "&Merchantrefno=" + merRef + "&ServiceType=" + ser);
+                    task.execute("http://venusrecharge.co.in/Transaction.aspx?authkey=10034&authpass=RANGANATHA@990&mobile=" + num + "&amount=" + am + "&opcode=" + op + "&Merchantrefno=" + merRef+ "&ServiceType=" + ser);
 
                 } catch (Exception e){
                     Toast.makeText(getApplicationContext(), "Racharge failed!", Toast.LENGTH_SHORT).show();
