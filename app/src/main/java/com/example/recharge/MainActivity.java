@@ -374,6 +374,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private static long generateId(){
+        Random rand = new Random();
+
+        long x = (long)(rand.nextDouble()*100000000L);
+
+        return Long.valueOf(x);
+
+    }
+
     private void checkCr(){
 
         System.out.println(am+num+op+merRef+ser);
@@ -382,39 +391,49 @@ public class MainActivity extends AppCompatActivity {
 
 
     void payUsingUpi(  String name,String upiId, String note, String amount) {
+      //  String GOOGLE_PAY_PACKAGE_NAME = "com.google.android.apps.nbu.paisa.user";
+        //int GOOGLE_PAY_REQUEST_CODE = 123;
+
+        long tid = generateId();
+        long tr = generateId();
         Uri uri = new Uri.Builder()
                 .scheme("upi").authority("pay")
         //Uri.parse("upi://pay").buildUpon()
                 .appendQueryParameter("pa", upiId)
                 .appendQueryParameter("pn", name)
-                //.appendQueryParameter("mc", "")
-                //.appendQueryParameter("tid", "02125412")
-                //.appendQueryParameter("tr", "25584584")
+                .appendQueryParameter("mc", "1234")
+                .appendQueryParameter("tid", String.valueOf(tid))
+               .appendQueryParameter("tr", String.valueOf(tr))
                 .appendQueryParameter("tn", note)
                 .appendQueryParameter("am", amount)
                 .appendQueryParameter("cu", "INR")
                 //.appendQueryParameter("refUrl", "blueapp")
                 .build();
 
-
+        Log.d("test",uri.toString());
         Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
         upiPayIntent.setData(uri);
+      //  upiPayIntent.setPackage(GOOGLE_PAY_PACKAGE_NAME);
+        //this.startActivityForResult(upiPayIntent, GOOGLE_PAY_REQUEST_CODE);
 
         // will always show a dialog to user to choose an app
         Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
 
         // check if intent resolves
         if( chooser.resolveActivity(getPackageManager())!=null) {
-            startActivityForResult(chooser, UPI_PAYMENT);
+            startActivityForResult(chooser, 123);
         } else {
             Toast.makeText( MainActivity.this,"No UPI app found, please install one to continue",Toast.LENGTH_SHORT).show();
         }
+
+
 
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d("test", String.valueOf(resultCode));
         switch (requestCode) {
             case UPI_PAYMENT:
                 if ((RESULT_OK == resultCode) || (resultCode == 11)) {
